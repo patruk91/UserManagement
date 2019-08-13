@@ -6,6 +6,7 @@ namespace UserManagement.BL
     {
         static void Main(string[] args)
         {
+            
         }
     }
 }
