@@ -16,9 +16,8 @@ namespace UserManagement.BL
 
             UserGroupController userGroupController = new UserGroupController(userGroupRepository, view, read);
             UserController userController = new UserController(userRepository, view, read);
-            Controller controller = new Controller(userController, userGroupController);
+            Controller controller = new Controller(userController, userGroupController, view, read);
 
-            userController._read
         }
     }
 }
