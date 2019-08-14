@@ -61,7 +61,31 @@ namespace UserManagement.AL.SQL
 
         public bool Add(User user)
         {
-            throw new NotImplementedException();
+            bool success = true;
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string query = "INSERT INTO users (login, password, first_name, last_name, date_of_birth) " +
+                               "VALUES (@login, @password, @first_name, @last_name, @date_of_birth)";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+                    command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
+                    command.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    command.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    command.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
+                    command.Prepare();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        success = false;
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            return success;
         }
 
         public bool Delete(User user)
