@@ -1,6 +1,10 @@
 ﻿using System;
 using UserManagement.AL;
 using UserManagement.VL;
+using System.Data.SqlClient;
+using Npgsql;
+using UserManagement.BL.controller;
+using UserManagement.BL.model;
 
 namespace UserManagement.BL
 {
@@ -17,7 +21,6 @@ namespace UserManagement.BL
             UserGroupController userGroupController = new UserGroupController(userGroupRepository, view, read);
             UserController userController = new UserController(userRepository, view, read);
             Controller controller = new Controller(userController, userGroupController, view, read);
-
         }
     }
 }

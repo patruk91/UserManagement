@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UserManagement.BL
+namespace UserManagement.BL.model
 {
     public class UserGroup
     {

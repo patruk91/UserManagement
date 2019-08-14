@@ -1,7 +1,8 @@
 ﻿using UserManagement.AL;
+using UserManagement.BL.model;
 using UserManagement.VL;
 
-namespace UserManagement.BL
+namespace UserManagement.BL.controller
 {
     public class UserGroupController
     {
