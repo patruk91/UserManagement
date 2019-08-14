@@ -112,9 +112,28 @@ namespace UserManagement.AL.SQL
             return success;
         }
 
-        public bool Delete(User user)
+        public bool Delete(string login)
         {
-            throw new NotImplementedException();
+            bool success = true;
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string query = "DELETE FROM users WHERE login = @login";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = login;
+                    command.Prepare();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        success = false;
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            return success;
         }
 
         public bool Edit(User user)
