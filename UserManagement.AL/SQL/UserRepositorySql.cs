@@ -31,13 +31,32 @@ namespace UserManagement.AL.SQL
                     }
                 }
             }
-
             return users;
         }
 
-        public User Get(string id)
+        public User Get(string userLogin)
         {
-            throw new NotImplementedException();
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string query = "SELECT * FROM users WHERE login = @login";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
+                    command.Prepare();
+                    NpgsqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string login = reader.GetString(reader.GetOrdinal("login"));
+                        string password = reader.GetString(reader.GetOrdinal("password"));
+                        string firstName = reader.GetString(reader.GetOrdinal("first_name"));
+                        string lastName = reader.GetString(reader.GetOrdinal("last_name"));
+                        DateTime dateOfBirth = reader.GetDateTime(reader.GetOrdinal("date_of_birth"));
+
+                        return new User(login, password, firstName, lastName, dateOfBirth);
+                    }
+                }
+            }
+            throw new ArgumentException("Invalid user login");
         }
 
         public bool Add(User user)
