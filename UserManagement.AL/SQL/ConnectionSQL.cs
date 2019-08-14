@@ -1,7 +1,7 @@
 ﻿using System;
 using Npgsql;
 
-namespace UserManagement.AL
+namespace UserManagement.AL.SQL
 {
     public class ConnectionSql
     {
@@ -11,10 +11,10 @@ namespace UserManagement.AL
             {
                 NpgsqlConnection connection = new NpgsqlConnection(
                     "Server=localhost;" +
-                                    "Port=5432;" +
-                                    "User Id=postgres;" +
-                                    "Password=postgres;" +
-                                    "Database=usermanagement;");
+                    "Port=5432;" +
+                    "User Id=postgres;" +
+                    "Password=postgres;" +
+                    "Database=usermanagement;");
                 connection.Open();
                 return connection;
             }

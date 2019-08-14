@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UserManagement.AL
+namespace UserManagement.AL.SQL
 {
-    public class RepositorySQL<T> : IRepository<T>
+    public class RepositorySql<T> : IRepository<T>
     {
         public IEnumerable<T> GetAll()
         {
