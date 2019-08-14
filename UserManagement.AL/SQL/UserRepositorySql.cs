@@ -12,21 +12,24 @@ namespace UserManagement.AL.SQL
         public IEnumerable<User> GetAll()
         {
             IEnumerable<User> users = new List<User>();
-            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            using (NpgsqlConnection userConnection = ConnectionSql.GetConnection())
             {
-                string query = "SELECT * FROM users";
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                string userQuery = "SELECT * FROM users";
+                using (NpgsqlCommand userCommand = new NpgsqlCommand(userQuery, userConnection))
                 {
-                    NpgsqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
+                    NpgsqlDataReader userReader = userCommand.ExecuteReader();
+                    while (userReader.Read())
                     {
-                        string login = reader.GetString(reader.GetOrdinal("login"));
-                        string password = reader.GetString(reader.GetOrdinal("password"));
-                        string firstName = reader.GetString(reader.GetOrdinal("first_name"));
-                        string lastName = reader.GetString(reader.GetOrdinal("last_name"));
-                        DateTime dateOfBirth = reader.GetDateTime(reader.GetOrdinal("date_of_birth"));
+                        string login = userReader.GetString(userReader.GetOrdinal("login"));
+                        string password = userReader.GetString(userReader.GetOrdinal("password"));
+                        string firstName = userReader.GetString(userReader.GetOrdinal("first_name"));
+                        string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
+                        DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
+
+                        
 
                         User user = new User(login, password, firstName, lastName, dateOfBirth);
+                        AddUserGroups(user);
                         users = users.Append(user);
                     }
                 }
@@ -34,25 +37,46 @@ namespace UserManagement.AL.SQL
             return users;
         }
 
+        private static void AddUserGroups(User user)
+        {
+            using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
+            {
+                string groupQuery = "SELECT * FROM list_users_and_groups WHERE login = @login";
+                using (NpgsqlCommand groupCommand = new NpgsqlCommand(groupQuery, groupConnection))
+                {
+                    groupCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+                    groupCommand.Prepare();
+                    NpgsqlDataReader groupReader = groupCommand.ExecuteReader();
+                    while (groupReader.Read())
+                    {
+                        string groupName = groupReader.GetString(groupReader.GetOrdinal("group_name"));
+                        user.UserGroup.Add(groupName);
+                    }
+                }
+            }
+        }
+
         public User Get(string userLogin)
         {
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
-                string query = "SELECT * FROM users WHERE login = @login";
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                string userQuery = "SELECT * FROM users WHERE login = @login";
+                using (NpgsqlCommand userCommand = new NpgsqlCommand(userQuery, connection))
                 {
-                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
-                    command.Prepare();
-                    NpgsqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        string login = reader.GetString(reader.GetOrdinal("login"));
-                        string password = reader.GetString(reader.GetOrdinal("password"));
-                        string firstName = reader.GetString(reader.GetOrdinal("first_name"));
-                        string lastName = reader.GetString(reader.GetOrdinal("last_name"));
-                        DateTime dateOfBirth = reader.GetDateTime(reader.GetOrdinal("date_of_birth"));
+                    userCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
+                    userCommand.Prepare();
+                    NpgsqlDataReader userReader = userCommand.ExecuteReader();
 
-                        return new User(login, password, firstName, lastName, dateOfBirth);
+                    while (userReader.Read())
+                    {
+                        string login = userReader.GetString(userReader.GetOrdinal("login"));
+                        string password = userReader.GetString(userReader.GetOrdinal("password"));
+                        string firstName = userReader.GetString(userReader.GetOrdinal("first_name"));
+                        string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
+                        DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
+                        User user = new User(login, password, firstName, lastName, dateOfBirth);
+                        AddUserGroups(user);
+                        return user;
                     }
                 }
             }
