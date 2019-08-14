@@ -23,13 +23,11 @@ namespace UserManagement.M
             string password,
             string firstName,
             string lastName,
-            DateTime birthDate,
-            List<string> userGroup) : this(login, password)
+            DateTime birthDate) : this(login, password)
         {
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
-            UserGroup = userGroup;
         }
     }
 }

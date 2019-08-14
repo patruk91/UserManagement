@@ -1,4 +1,9 @@
-﻿using UserManagement.VL;
+﻿using System;
+using System.Collections.Generic;
+using UserManagement.AL;
+using UserManagement.AL.SQL;
+using UserManagement.M;
+using UserManagement.VL;
 
 namespace UserManagement.BL.controller
 {
@@ -15,6 +20,16 @@ namespace UserManagement.BL.controller
             _userGroupController = userGroupController;
             _view = view;
             _read = read;
+        }
+
+        public void run()
+        {
+            IUserRepository repository = new UserRepositorySql();
+            IEnumerable<User> users = repository.GetAll();
+            foreach (User user in users)
+            {
+                Console.WriteLine(user.Login);
+            }
         }
     }
 }
