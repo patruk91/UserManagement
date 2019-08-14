@@ -1,11 +1,7 @@
-﻿using System;
-using UserManagement.AL;
-using UserManagement.VL;
-using System.Data.SqlClient;
-using Npgsql;
+﻿using UserManagement.AL;
 using UserManagement.AL.SQL;
+using UserManagement.VL;
 using UserManagement.BL.controller;
-using UserManagement.BL.model;
 
 namespace UserManagement.BL
 {
@@ -16,11 +12,11 @@ namespace UserManagement.BL
             View view = new View();
             Read read = new Read(view);
 
-            IRepository<User> userRepository = new RepositorySql<User>();
-            IRepository<UserGroup> userGroupRepository = new RepositorySql<UserGroup>();
+            IUserRepository userUserRepository = new UserRepositorySql();
+            IUserGroupRepository userGroupUserRepository = new UserGroupRepositorySql();
 
-            UserGroupController userGroupController = new UserGroupController(userGroupRepository, view, read);
-            UserController userController = new UserController(userRepository, view, read);
+            UserGroupController userGroupController = new UserGroupController(userGroupUserRepository, view, read);
+            UserController userController = new UserController(userUserRepository, view, read);
             Controller controller = new Controller(userController, userGroupController, view, read);
 
         }

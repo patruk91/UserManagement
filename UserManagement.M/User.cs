@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UserManagement.BL.model
+namespace UserManagement.M
 {
     public class User
     {
@@ -20,11 +20,11 @@ namespace UserManagement.BL.model
         }
 
         public User(string login,
-                    string password,
-                    string firstName,
-                    string lastName,
-                    DateTime birthDate,
-                    List<string> userGroup) : this(login, password)
+            string password,
+            string firstName,
+            string lastName,
+            DateTime birthDate,
+            List<string> userGroup) : this(login, password)
         {
             FirstName = firstName;
             LastName = lastName;

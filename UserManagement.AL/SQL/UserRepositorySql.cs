@@ -1,31 +1,34 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Npgsql;
+using UserManagement.M;
 
 namespace UserManagement.AL.SQL
 {
-    public class RepositorySql<T> : IRepository<T>
+    public class UserRepositorySql : IUserRepository
     {
-        public IEnumerable<T> GetAll()
+        public IEnumerable GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public T Get(string id)
+        public User Get(string id)
         {
             throw new NotImplementedException();
         }
 
-        public bool Add(T t)
+        public bool Add(User user)
         {
             throw new NotImplementedException();
         }
 
-        public bool Delete(T t)
+        public bool Delete(User user)
         {
             throw new NotImplementedException();
         }
 
-        public bool Edit(T t)
+        public bool Edit(User user)
         {
             throw new NotImplementedException();
         }

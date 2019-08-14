@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UserManagement.AL\UserManagement.AL.csproj" />
+    <ProjectReference Include="..\UserManagement.M\UserManagement.M.csproj" />
     <ProjectReference Include="..\UserManagement.VL\UserManagement.VL.csproj" />
   </ItemGroup>
 

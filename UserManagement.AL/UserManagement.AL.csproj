@@ -8,4 +8,8 @@
     <PackageReference Include="Npgsql" Version="4.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UserManagement.M\UserManagement.M.csproj" />
+  </ItemGroup>
+
 </Project>

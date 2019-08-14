@@ -1,18 +1,18 @@
 ﻿using UserManagement.AL;
-using UserManagement.BL.model;
+using UserManagement.AL.SQL;
 using UserManagement.VL;
 
 namespace UserManagement.BL.controller
 {
     public class UserGroupController
     {
-        private IRepository<UserGroup> _userGroupRepository;
+        private IUserGroupRepository _userGroupUserRepository;
         private View _view;
         private Read _read;
 
-        public UserGroupController(IRepository<UserGroup> userGroupRepository, View view, Read read)
+        public UserGroupController(IUserGroupRepository userGroupUserRepository, View view, Read read)
         {
-            _userGroupRepository = userGroupRepository;
+            _userGroupUserRepository = userGroupUserRepository;
             _view = view;
             _read = read;
         }
