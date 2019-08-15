@@ -10,7 +10,65 @@ namespace UserManagement.AL.SQL
     {
         public OperationResult Add(UserGroup userGroup)
         {
-            throw new System.NotImplementedException();
+            OperationResult operationResult = new OperationResult
+            {
+                Succes = true
+            };
+            using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
+            {
+                string query = "INSERT INTO user_groups (group_name) " +
+                               "VALUES (@groupName)";
+                using (NpgsqlCommand groupCommand = new NpgsqlCommand(query, groupConnection))
+                {
+                    PrepareGroupCommand(userGroup, groupCommand);
+
+                    try
+                    {
+                        groupCommand.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.Message);
+                    }
+
+                    InsertUsersLogins(userGroup, operationResult);
+                }
+            }
+            return operationResult;
+        }
+
+        private static void PrepareGroupCommand(UserGroup userGroup, NpgsqlCommand command)
+        {
+            command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
+            command.Prepare();
+        }
+
+        private static void InsertUsersLogins(UserGroup userGroup, OperationResult operationResult)
+        {
+            foreach (string userLogin in userGroup.UsersInGroup)
+            {
+                using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
+                {
+                    string groupQuery = "INSERT INTO list_users_and_groups (login, group_name) VALUES (@login, @group_name)";
+                    using (NpgsqlCommand groupCommand = new NpgsqlCommand(groupQuery, groupConnection))
+                    {
+                        groupCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
+                        groupCommand.Parameters.Add("group_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
+                        groupCommand.Prepare();
+
+                        try
+                        {
+                            groupCommand.ExecuteNonQuery();
+                        }
+                        catch (NpgsqlException e)
+                        {
+                            operationResult.Succes = false;
+                            operationResult.Messages.Add(e.Message);
+                        }
+                    }
+                }
+            }
         }
 
         public OperationResult Delete(string groupName)
