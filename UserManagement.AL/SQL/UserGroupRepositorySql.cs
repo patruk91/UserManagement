@@ -1,11 +1,22 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UserManagement.M;
 
 namespace UserManagement.AL.SQL
 {
     public class UserGroupRepositorySql : IUserGroupRepository
     {
-        public IEnumerable GetAll()
+        public OperationResult Add(UserGroup userGroup)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public OperationResult Delete(UserGroup userGroup)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public OperationResult Edit(UserGroup userGroup)
         {
             throw new System.NotImplementedException();
         }
@@ -15,17 +26,7 @@ namespace UserManagement.AL.SQL
             throw new System.NotImplementedException();
         }
 
-        public bool Add(UserGroup userGroup)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool Delete(UserGroup userGroup)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool Edit(UserGroup userGroup)
+        public List<UserGroup> GetAll()
         {
             throw new System.NotImplementedException();
         }

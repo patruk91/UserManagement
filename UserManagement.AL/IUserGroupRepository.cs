@@ -1,14 +1,14 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using UserManagement.M;
 
 namespace UserManagement.AL.SQL
 {
     public interface IUserGroupRepository
     {
-        IEnumerable GetAll();
+        List<UserGroup> GetAll();
         UserGroup Get(string id);
-        bool Add(UserGroup userGroup);
-        bool Delete(UserGroup userGroup);
-        bool Edit(UserGroup userGroup);
+        OperationResult Add(UserGroup userGroup);
+        OperationResult Delete(UserGroup userGroup);
+        OperationResult Edit(UserGroup userGroup);
     }
 }
