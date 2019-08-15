@@ -40,7 +40,7 @@ namespace UserManagement.AL.SQL
 
         private static void PrepareGroupCommand(UserGroup userGroup, NpgsqlCommand command)
         {
-            command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
+            command.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
             command.Prepare();
         }
 
