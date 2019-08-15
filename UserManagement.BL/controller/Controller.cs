@@ -53,14 +53,50 @@ namespace UserManagement.BL.controller
             }
         }
 
+        private void HandleUsers()
+        {
+            bool backToMain = false;
+            while (!backToMain)
+            {
+                string userMenu = "1. Display all users\n" +
+                                  "2. Add user\n" +
+                                  "3. Remove user\n" +
+                                  "4. Edit user\n" +
+                                  "5. Back to main menu";
+                _view.DisplayMenu(userMenu);
+                _view.DisplayActionRequest("Choose option");
+                int userMenuOption = _read.GetNumberFromString();
+
+                switch (userMenuOption)
+                {
+                    case 1:
+                        
+                        break;
+                    case 2:
+                        
+                        break;
+                    case 3:
+
+                        break;
+                    case 4:
+
+                        break;
+                    case 5:
+                        backToMain = true;
+                        break;
+                    default:
+                        _view.DisplayError("Invalid option");
+                        break;
+                }
+
+            }
+        }
+
         private void HandleGroupUsers()
         {
             throw new NotImplementedException();
         }
 
-        private void HandleUsers()
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
