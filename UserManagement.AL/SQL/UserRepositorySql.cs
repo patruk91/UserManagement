@@ -8,29 +8,28 @@ namespace UserManagement.AL.SQL
 {
     public class UserRepositorySql : IUserRepository
     {
-        public IEnumerable<User> GetAll()
+        public List<User> GetAll()
         {
-            IEnumerable<User> users = new List<User>();
+            List<User> users = new List<User>();
             using (NpgsqlConnection userConnection = ConnectionSql.GetConnection())
             {
                 string userQuery = "SELECT * FROM users";
                 using (NpgsqlCommand userCommand = new NpgsqlCommand(userQuery, userConnection))
                 {
-                    users = PopulateListOfAllUsers(users, userCommand);
+                    PopulateListOfAllUsers(users, userCommand);
                 }
             }
             return users;
         }
 
-        private static IEnumerable<User> PopulateListOfAllUsers(IEnumerable<User> users, NpgsqlCommand userCommand)
+        private static List<User> PopulateListOfAllUsers(List<User> users, NpgsqlCommand userCommand)
         {
             NpgsqlDataReader userReader = userCommand.ExecuteReader();
             while (userReader.Read())
             {
                 User user = GetUserData(userReader);
-
                 PopulateListOfUserGroups(user);
-                users = users.Append(user);
+                users.Add(user);
             }
 
             return users;

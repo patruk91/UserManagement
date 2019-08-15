@@ -5,7 +5,7 @@ namespace UserManagement.AL
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAll();
+        List<User> GetAll();
         User Get(string id);
         bool Add(User user);
         bool Delete(string login);
