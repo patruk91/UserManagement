@@ -85,9 +85,12 @@ namespace UserManagement.AL.SQL
             throw new ArgumentException("Invalid user login");
         }
 
-        public bool Add(User user)
+        public OperationResult Add(User user)
         {
-            bool success = true;
+            OperationResult operationResult = new OperationResult
+            {
+                Succes = true
+            };
             using (NpgsqlConnection userConnection = ConnectionSql.GetConnection())
             {
                 string query = "INSERT INTO users (login, password, first_name, last_name, date_of_birth) " +
@@ -102,14 +105,14 @@ namespace UserManagement.AL.SQL
                     }
                     catch (NpgsqlException e)
                     {
-                        success = false;
-                        Console.WriteLine(e);
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.ToString());
                     }
 
-                    success = InsertUserGroups(user, success);
+                    InsertUserGroups(user, operationResult);
                 }
             }
-            return success;
+            return operationResult;
         }
 
         private static void PrepareUserCommand(User user, NpgsqlCommand command)
@@ -122,7 +125,7 @@ namespace UserManagement.AL.SQL
             command.Prepare();
         }
 
-        private static bool InsertUserGroups(User user, bool success)
+        private static void InsertUserGroups(User user, OperationResult operationResult)
         {
             foreach (string group in user.UserGroup)
             {
@@ -141,19 +144,20 @@ namespace UserManagement.AL.SQL
                         }
                         catch (NpgsqlException e)
                         {
-                            success = false;
-                            Console.WriteLine(e);
+                            operationResult.Succes = false;
+                            operationResult.Messages.Add(e.ToString());
                         }
                     }
                 }
             }
-
-            return success;
         }
 
-        public bool Delete(string login)
+        public OperationResult Delete(string login)
         {
-            bool success = true;
+            OperationResult operationResult = new OperationResult()
+            {
+                Succes = true
+            };
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
                 string query = "DELETE FROM users WHERE login = @login";
@@ -167,18 +171,18 @@ namespace UserManagement.AL.SQL
                     }
                     catch (NpgsqlException e)
                     {
-                        success = false;
-                        Console.WriteLine(e);
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.ToString());
                     }
                 }
             }
-            return success;
+            return operationResult;
         }
 
-        public bool Edit(User user)
+        public OperationResult Edit(User user)
         {
-            bool success = true;
-            DeleteUserGroups(user.Login);
+            OperationResult operationResult = new OperationResult {Succes = true};
+            DeleteUserGroups(user.Login, operationResult);
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
                 string userQuery = "UPDATE users SET password = @password, " +
@@ -190,24 +194,23 @@ namespace UserManagement.AL.SQL
                 {
                     PrepareUserCommand(user, command);
 
-                    success = InsertUserGroups(user, success);
+                    InsertUserGroups(user, operationResult);
                     try
                     {
                         command.ExecuteNonQuery();
                     }
                     catch (NpgsqlException e)
                     {
-                        success = false;
-                        Console.WriteLine(e);
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.ToString());
                     }
                 }
             }
-            return success;
+            return operationResult;
         }
 
-        private void DeleteUserGroups(string login)
+        private void DeleteUserGroups(string login, OperationResult operationResult)
         {
-            bool success = true;
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
                 string query = "DELETE FROM list_users_and_groups WHERE login = @login";
@@ -221,8 +224,8 @@ namespace UserManagement.AL.SQL
                     }
                     catch (NpgsqlException e)
                     {
-                        success = false;
-                        Console.WriteLine(e);
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.ToString());
                     }
                 }
             }

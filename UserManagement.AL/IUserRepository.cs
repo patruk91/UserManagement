@@ -7,8 +7,8 @@ namespace UserManagement.AL
     {
         List<User> GetAll();
         User Get(string id);
-        bool Add(User user);
-        bool Delete(string login);
-        bool Edit(User user);
+        OperationResult Add(User user);
+        OperationResult Delete(string login);
+        OperationResult Edit(User user);
     }
 }
