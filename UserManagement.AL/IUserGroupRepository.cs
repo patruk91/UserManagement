@@ -8,7 +8,7 @@ namespace UserManagement.AL.SQL
         List<UserGroup> GetAll();
         UserGroup Get(string groupName);
         OperationResult Add(UserGroup userGroup);
-        OperationResult Delete(UserGroup userGroup);
+        OperationResult Delete(string groupName);
         OperationResult Edit(UserGroup userGroup);
     }
 }

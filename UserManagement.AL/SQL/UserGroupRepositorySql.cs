@@ -13,9 +13,31 @@ namespace UserManagement.AL.SQL
             throw new System.NotImplementedException();
         }
 
-        public OperationResult Delete(UserGroup userGroup)
+        public OperationResult Delete(string groupName)
         {
-            throw new System.NotImplementedException();
+            OperationResult operationResult = new OperationResult()
+            {
+                Succes = true
+            };
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string query = "DELETE FROM user_groups WHERE group_name = @groupName";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = groupName;
+                    command.Prepare();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.Message);
+                    }
+                }
+            }
+            return operationResult;
         }
 
         public OperationResult Edit(UserGroup userGroup)
