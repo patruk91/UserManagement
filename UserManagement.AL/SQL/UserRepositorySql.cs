@@ -16,20 +16,27 @@ namespace UserManagement.AL.SQL
                 string userQuery = "SELECT * FROM users";
                 using (NpgsqlCommand userCommand = new NpgsqlCommand(userQuery, userConnection))
                 {
-                    NpgsqlDataReader userReader = userCommand.ExecuteReader();
-                    while (userReader.Read())
-                    {
-                        User user = GetUser(userReader);
-
-                        PopulateUserGroups(user);
-                        users = users.Append(user);
-                    }
+                    users = PopulateListOfAllUsers(users, userCommand);
                 }
             }
             return users;
         }
 
-        private static User GetUser(NpgsqlDataReader userReader)
+        private static IEnumerable<User> PopulateListOfAllUsers(IEnumerable<User> users, NpgsqlCommand userCommand)
+        {
+            NpgsqlDataReader userReader = userCommand.ExecuteReader();
+            while (userReader.Read())
+            {
+                User user = GetUserData(userReader);
+
+                PopulateListOfUserGroups(user);
+                users = users.Append(user);
+            }
+
+            return users;
+        }
+
+        private static User GetUserData(NpgsqlDataReader userReader)
         {
             string login = userReader.GetString(userReader.GetOrdinal("login"));
             string password = userReader.GetString(userReader.GetOrdinal("password"));
@@ -40,7 +47,7 @@ namespace UserManagement.AL.SQL
             return new User(login, password, firstName, lastName, dateOfBirth);
         }
 
-        private static void PopulateUserGroups(User user)
+        private static void PopulateListOfUserGroups(User user)
         {
             using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
             {
@@ -72,8 +79,8 @@ namespace UserManagement.AL.SQL
 
                     while (userReader.Read())
                     {
-                        User user = GetUser(userReader);
-                        PopulateUserGroups(user);
+                        User user = GetUserData(userReader);
+                        PopulateListOfUserGroups(user);
                         return user;
                     }
                 }
