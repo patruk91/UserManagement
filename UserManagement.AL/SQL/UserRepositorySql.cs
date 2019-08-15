@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Npgsql;
@@ -20,7 +19,7 @@ namespace UserManagement.AL.SQL
                     NpgsqlDataReader userReader = userCommand.ExecuteReader();
                     while (userReader.Read())
                     {
-                        User user = getUser(userReader);
+                        User user = GetUser(userReader);
 
                         PopulateUserGroups(user);
                         users = users.Append(user);
@@ -30,7 +29,7 @@ namespace UserManagement.AL.SQL
             return users;
         }
 
-        private static User getUser(NpgsqlDataReader userReader)
+        private static User GetUser(NpgsqlDataReader userReader)
         {
             string login = userReader.GetString(userReader.GetOrdinal("login"));
             string password = userReader.GetString(userReader.GetOrdinal("password"));
@@ -73,7 +72,7 @@ namespace UserManagement.AL.SQL
 
                     while (userReader.Read())
                     {
-                        User user = getUser(userReader);
+                        User user = GetUser(userReader);
                         PopulateUserGroups(user);
                         return user;
                     }
@@ -91,12 +90,7 @@ namespace UserManagement.AL.SQL
                                "VALUES (@login, @password, @first_name, @last_name, @date_of_birth)";
                 using (NpgsqlCommand userCommand = new NpgsqlCommand(query, userConnection))
                 {
-                    userCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
-                    userCommand.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
-                    userCommand.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    userCommand.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    userCommand.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
-                    userCommand.Prepare();
+                    PrepareUserCommand(user, userCommand);
 
                     try
                     {
@@ -112,6 +106,16 @@ namespace UserManagement.AL.SQL
                 }
             }
             return success;
+        }
+
+        private static void PrepareUserCommand(User user, NpgsqlCommand command)
+        {
+            command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+            command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
+            command.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+            command.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+            command.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
+            command.Prepare();
         }
 
         private static bool InsertUserGroups(User user, bool success)
@@ -180,12 +184,7 @@ namespace UserManagement.AL.SQL
                                                        "WHERE login = @login";
                 using (NpgsqlCommand command = new NpgsqlCommand(userQuery, connection))
                 {
-                    command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
-                    command.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    command.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    command.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
-                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
-                    command.Prepare();
+                    PrepareUserCommand(user, command);
 
                     success = InsertUserGroups(user, success);
                     try
