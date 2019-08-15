@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UserManagement.M;
@@ -22,9 +23,26 @@ namespace UserManagement.AL.SQL
             throw new System.NotImplementedException();
         }
 
-        public UserGroup Get(string id)
+        public UserGroup Get(string groupName)
         {
-            throw new System.NotImplementedException();
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string groupQuery = "SELECT * FROM user_groups WHERE group_name = @gropuName";
+                using (NpgsqlCommand groupCommand = new NpgsqlCommand(groupQuery, connection))
+                {
+                    groupCommand.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = groupName;
+                    groupCommand.Prepare();
+                    NpgsqlDataReader groupReader = groupCommand.ExecuteReader();
+
+                    while (groupReader.Read())
+                    {
+                        UserGroup userGroup = GetGrouprDataFromQuery(groupReader);
+                        PopulateListOfUsersInGroups(userGroup);
+                        return userGroup;
+                    }
+                }
+            }
+            throw new ArgumentException("Invalid group name");
         }
 
         public List<UserGroup> GetAll()
