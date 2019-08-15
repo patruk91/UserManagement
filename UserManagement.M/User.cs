@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace UserManagement.M
 {
@@ -28,6 +31,20 @@ namespace UserManagement.M
             FirstName = firstName;
             LastName = lastName;
             BirthDate = birthDate;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Login: {Login}; Password: {Password}\n" +
+                   $"First Name: {FirstName}; Last Name: {LastName} " +
+                   $"Birth Date: {BirthDate:dd/MM/yyyy}\n" +
+                   $"Groups:\n");
+            foreach(string group in UserGroup)
+            {
+                sb.Append($"    {group}\n");
+            }
+            return sb.ToString();
         }
     }
 }
