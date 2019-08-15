@@ -27,7 +27,7 @@ namespace UserManagement.AL.SQL
         {
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
-                string groupQuery = "SELECT * FROM user_groups WHERE group_name = @gropuName";
+                string groupQuery = "SELECT * FROM user_groups WHERE group_name = @groupName";
                 using (NpgsqlCommand groupCommand = new NpgsqlCommand(groupQuery, connection))
                 {
                     groupCommand.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = groupName;
