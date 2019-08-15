@@ -20,7 +20,8 @@ namespace UserManagement.AL.SQL
                                "VALUES (@groupName)";
                 using (NpgsqlCommand groupCommand = new NpgsqlCommand(query, groupConnection))
                 {
-                    PrepareGroupCommand(userGroup, groupCommand);
+                    groupCommand.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
+                    groupCommand.Prepare();
 
                     try
                     {
@@ -36,12 +37,6 @@ namespace UserManagement.AL.SQL
                 }
             }
             return operationResult;
-        }
-
-        private static void PrepareGroupCommand(UserGroup userGroup, NpgsqlCommand command)
-        {
-            command.Parameters.Add("groupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userGroup.GroupName;
-            command.Prepare();
         }
 
         private static void InsertUsersLogins(UserGroup userGroup, OperationResult operationResult)
@@ -98,9 +93,28 @@ namespace UserManagement.AL.SQL
             return operationResult;
         }
 
-        public OperationResult Edit(UserGroup userGroup)
+        public OperationResult Edit(string newGroupName, string oldGroupName)
         {
-            throw new System.NotImplementedException();
+            OperationResult operationResult = new OperationResult { Succes = true };
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string userQuery = "UPDATE user_groups SET group_name = @newGroupName, " +
+                                                       "WHERE group_name = @oldGroupName";
+                using (NpgsqlCommand command = new NpgsqlCommand(userQuery, connection))
+                {
+                    PrepareUserCommand(user, command);
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        operationResult.Succes = false;
+                        operationResult.Messages.Add(e.Message);
+                    }
+                }
+            }
+            return operationResult;
         }
 
         public UserGroup Get(string groupName)

@@ -9,6 +9,6 @@ namespace UserManagement.AL.SQL
         UserGroup Get(string groupName);
         OperationResult Add(UserGroup userGroup);
         OperationResult Delete(string groupName);
-        OperationResult Edit(UserGroup userGroup);
+        OperationResult Edit(string newGroupName, string oldGroupName);
     }
 }
