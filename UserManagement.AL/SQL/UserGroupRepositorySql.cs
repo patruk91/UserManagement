@@ -102,7 +102,9 @@ namespace UserManagement.AL.SQL
                                                        "WHERE group_name = @oldGroupName";
                 using (NpgsqlCommand command = new NpgsqlCommand(userQuery, connection))
                 {
-                    PrepareUserCommand(user, command);
+                    command.Parameters.Add("newGroupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = newGroupName;
+                    command.Parameters.Add("oldGroupName", NpgsqlTypes.NpgsqlDbType.Varchar).Value = oldGroupName;
+                    command.Prepare();
                     try
                     {
                         command.ExecuteNonQuery();
