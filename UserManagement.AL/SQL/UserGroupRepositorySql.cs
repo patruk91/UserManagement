@@ -98,7 +98,7 @@ namespace UserManagement.AL.SQL
             OperationResult operationResult = new OperationResult { Succes = true };
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
-                string userQuery = "UPDATE user_groups SET group_name = @newGroupName, " +
+                string userQuery = "UPDATE user_groups SET group_name = @newGroupName " +
                                                        "WHERE group_name = @oldGroupName";
                 using (NpgsqlCommand command = new NpgsqlCommand(userQuery, connection))
                 {
