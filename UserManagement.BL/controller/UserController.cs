@@ -1,4 +1,6 @@
-﻿using UserManagement.AL;
+﻿using System.Collections.Generic;
+using UserManagement.AL;
+using UserManagement.M;
 using UserManagement.VL;
 
 namespace UserManagement.BL.controller
@@ -16,6 +18,11 @@ namespace UserManagement.BL.controller
             _userUserRepository = userUserRepository;
             _view = view;
             _read = read;
+        }
+
+        public List<User> GetAllUsers()
+        {
+            return _userUserRepository.GetAll();
         }
     }
 }

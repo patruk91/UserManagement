@@ -70,7 +70,8 @@ namespace UserManagement.BL.controller
                 switch (userMenuOption)
                 {
                     case 1:
-                        
+                        List<User> users = _userController.GetAllUsers();
+                        _view.DisplayUsers(users);
                         break;
                     case 2:
                         
