@@ -106,7 +106,7 @@ namespace UserManagement.AL.SQL
                     catch (NpgsqlException e)
                     {
                         operationResult.Succes = false;
-                        operationResult.Messages.Add(e..Message);
+                        operationResult.Messages.Add(e.Message);
                     }
 
                     InsertUserGroups(user, operationResult);
@@ -145,7 +145,7 @@ namespace UserManagement.AL.SQL
                         catch (NpgsqlException e)
                         {
                             operationResult.Succes = false;
-                            operationResult.Messages.Add(e..Message);
+                            operationResult.Messages.Add(e.Message);
                         }
                     }
                 }
@@ -172,7 +172,7 @@ namespace UserManagement.AL.SQL
                     catch (NpgsqlException e)
                     {
                         operationResult.Succes = false;
-                        operationResult.Messages.Add(e..Message);
+                        operationResult.Messages.Add(e.Message);
                     }
                 }
             }
@@ -202,7 +202,7 @@ namespace UserManagement.AL.SQL
                     catch (NpgsqlException e)
                     {
                         operationResult.Succes = false;
-                        operationResult.Messages.Add(e..Message);
+                        operationResult.Messages.Add(e.Message);
                     }
                 }
             }
