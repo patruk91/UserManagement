@@ -27,7 +27,7 @@ namespace UserManagement.AL.SQL
             NpgsqlDataReader userReader = userCommand.ExecuteReader();
             while (userReader.Read())
             {
-                User user = GetUserData(userReader);
+                User user = GetUserDataFromQuery(userReader);
                 PopulateListOfUserGroups(user);
                 users.Add(user);
             }
@@ -35,7 +35,7 @@ namespace UserManagement.AL.SQL
             return users;
         }
 
-        private static User GetUserData(NpgsqlDataReader userReader)
+        private static User GetUserDataFromQuery(NpgsqlDataReader userReader)
         {
             string login = userReader.GetString(userReader.GetOrdinal("login"));
             string password = userReader.GetString(userReader.GetOrdinal("password"));
@@ -78,7 +78,7 @@ namespace UserManagement.AL.SQL
 
                     while (userReader.Read())
                     {
-                        User user = GetUserData(userReader);
+                        User user = GetUserDataFromQuery(userReader);
                         PopulateListOfUserGroups(user);
                         return user;
                     }
