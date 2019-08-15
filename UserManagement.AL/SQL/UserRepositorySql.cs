@@ -20,21 +20,25 @@ namespace UserManagement.AL.SQL
                     NpgsqlDataReader userReader = userCommand.ExecuteReader();
                     while (userReader.Read())
                     {
-                        string login = userReader.GetString(userReader.GetOrdinal("login"));
-                        string password = userReader.GetString(userReader.GetOrdinal("password"));
-                        string firstName = userReader.GetString(userReader.GetOrdinal("first_name"));
-                        string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
-                        DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
+                        User user = getUser(userReader);
 
-                        
-
-                        User user = new User(login, password, firstName, lastName, dateOfBirth);
                         PopulateUserGroups(user);
                         users = users.Append(user);
                     }
                 }
             }
             return users;
+        }
+
+        private static User getUser(NpgsqlDataReader userReader)
+        {
+            string login = userReader.GetString(userReader.GetOrdinal("login"));
+            string password = userReader.GetString(userReader.GetOrdinal("password"));
+            string firstName = userReader.GetString(userReader.GetOrdinal("first_name"));
+            string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
+            DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
+
+            return new User(login, password, firstName, lastName, dateOfBirth);
         }
 
         private static void PopulateUserGroups(User user)
@@ -69,12 +73,7 @@ namespace UserManagement.AL.SQL
 
                     while (userReader.Read())
                     {
-                        string login = userReader.GetString(userReader.GetOrdinal("login"));
-                        string password = userReader.GetString(userReader.GetOrdinal("password"));
-                        string firstName = userReader.GetString(userReader.GetOrdinal("first_name"));
-                        string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
-                        DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
-                        User user = new User(login, password, firstName, lastName, dateOfBirth);
+                        User user = getUser(userReader);
                         PopulateUserGroups(user);
                         return user;
                     }
