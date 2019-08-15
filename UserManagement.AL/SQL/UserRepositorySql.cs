@@ -29,7 +29,7 @@ namespace UserManagement.AL.SQL
                         
 
                         User user = new User(login, password, firstName, lastName, dateOfBirth);
-                        AddUserGroups(user);
+                        PopulateUserGroups(user);
                         users = users.Append(user);
                     }
                 }
@@ -37,7 +37,7 @@ namespace UserManagement.AL.SQL
             return users;
         }
 
-        private static void AddUserGroups(User user)
+        private static void PopulateUserGroups(User user)
         {
             using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
             {
@@ -75,7 +75,7 @@ namespace UserManagement.AL.SQL
                         string lastName = userReader.GetString(userReader.GetOrdinal("last_name"));
                         DateTime dateOfBirth = userReader.GetDateTime(userReader.GetOrdinal("date_of_birth"));
                         User user = new User(login, password, firstName, lastName, dateOfBirth);
-                        AddUserGroups(user);
+                        PopulateUserGroups(user);
                         return user;
                     }
                 }
@@ -86,29 +86,61 @@ namespace UserManagement.AL.SQL
         public bool Add(User user)
         {
             bool success = true;
-            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            using (NpgsqlConnection userConnection = ConnectionSql.GetConnection())
             {
                 string query = "INSERT INTO users (login, password, first_name, last_name, date_of_birth) " +
                                "VALUES (@login, @password, @first_name, @last_name, @date_of_birth)";
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                using (NpgsqlCommand userCommand = new NpgsqlCommand(query, userConnection))
                 {
-                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
-                    command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
-                    command.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    command.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
-                    command.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
-                    command.Prepare();
+                    userCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+                    userCommand.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
+                    userCommand.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    userCommand.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    userCommand.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
+                    userCommand.Prepare();
+
                     try
                     {
-                        command.ExecuteNonQuery();
+                        userCommand.ExecuteNonQuery();
                     }
                     catch (NpgsqlException e)
                     {
                         success = false;
                         Console.WriteLine(e);
                     }
+
+                    success = InsertUserGroups(user, success);
                 }
             }
+            return success;
+        }
+
+        private static bool InsertUserGroups(User user, bool success)
+        {
+            foreach (string group in user.UserGroup)
+            {
+                using (NpgsqlConnection groupConnection = ConnectionSql.GetConnection())
+                {
+                    string groupQuery = "INSERT INTO list_users_and_groups (login, group_name) VALUES (@login, @group_name)";
+                    using (NpgsqlCommand groupCommand = new NpgsqlCommand(groupQuery, groupConnection))
+                    {
+                        groupCommand.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+                        groupCommand.Parameters.Add("group_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = @group;
+                        groupCommand.Prepare();
+
+                        try
+                        {
+                            groupCommand.ExecuteNonQuery();
+                        }
+                        catch (NpgsqlException e)
+                        {
+                            success = false;
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+            }
+
             return success;
         }
 
@@ -138,7 +170,60 @@ namespace UserManagement.AL.SQL
 
         public bool Edit(User user)
         {
-            throw new NotImplementedException();
+            bool success = true;
+            DeleteUserGroups(user.Login);
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string userQuery = "UPDATE users SET password = @password, " +
+                                                       "first_name = @first_name, " +
+                                                       "last_name = @last_name, " +
+                                                       "date_of_birth = @date_of_birth " +
+                                                       "WHERE login = @login";
+                using (NpgsqlCommand command = new NpgsqlCommand(userQuery, connection))
+                {
+                    command.Parameters.Add("password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
+                    command.Parameters.Add("first_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    command.Parameters.Add("last_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.FirstName;
+                    command.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Date).Value = user.BirthDate;
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Login;
+                    command.Prepare();
+
+                    success = InsertUserGroups(user, success);
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        success = false;
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            return success;
+        }
+
+        private void DeleteUserGroups(string login)
+        {
+            bool success = true;
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+                string query = "DELETE FROM list_users_and_groups WHERE login = @login";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = login;
+                    command.Prepare();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException e)
+                    {
+                        success = false;
+                        Console.WriteLine(e);
+                    }
+                }
+            }
         }
     }
 }

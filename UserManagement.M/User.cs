@@ -6,7 +6,7 @@ namespace UserManagement.M
     public class User
     {
         public string Login { get; private set; }
-        public string Password { get; private set; }
+        public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime BirthDate { get; set; }
