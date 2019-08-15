@@ -22,7 +22,7 @@ namespace UserManagement.AL.SQL
             return users;
         }
 
-        private static List<User> PopulateListOfAllUsers(List<User> users, NpgsqlCommand userCommand)
+        private static void PopulateListOfAllUsers(List<User> users, NpgsqlCommand userCommand)
         {
             NpgsqlDataReader userReader = userCommand.ExecuteReader();
             while (userReader.Read())
@@ -31,8 +31,6 @@ namespace UserManagement.AL.SQL
                 PopulateListOfUserGroups(user);
                 users.Add(user);
             }
-
-            return users;
         }
 
         private static User GetUserDataFromQuery(NpgsqlDataReader userReader)
