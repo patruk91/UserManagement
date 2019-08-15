@@ -24,12 +24,43 @@ namespace UserManagement.BL.controller
 
         public void run()
         {
-            IUserRepository repository = new UserRepositorySql();
-            IEnumerable<User> users = repository.GetAll();
-            foreach (User user in users)
+            bool exit = false;
+            while (!exit)
             {
-                Console.WriteLine(user.Login);
+                string mainMenu = "1. Manage users\n" +
+                                  "2. Manage group of users\n" +
+                                  "3. Exit";
+                _view.DisplayMenu(mainMenu);
+                _view.DisplayActionRequest("Choose option");
+                int mainMenuOption = _read.GetNumberFromString();
+
+                switch (mainMenuOption)
+                {
+                    case 1:
+                        HandleUsers();
+                        break;
+                    case 2:
+                        HandleGroupUsers();
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
+                    default:
+                        _view.DisplayError("Invalid option");
+                        break;
+                }
+
             }
+        }
+
+        private void HandleGroupUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleUsers()
+        {
+            throw new NotImplementedException();
         }
     }
 }
