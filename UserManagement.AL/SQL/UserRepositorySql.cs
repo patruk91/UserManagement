@@ -211,7 +211,30 @@ namespace UserManagement.AL.SQL
 
         public bool IsLoginUnique(string userLogin)
         {
-            throw new NotImplementedException();
+            bool isLoginunique = true;
+            using (NpgsqlConnection connection = ConnectionSql.GetConnection())
+            {
+
+                string query = "SELECT exist(SELECT 'exists' FROM users WHERE login = ?) AS result";
+                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
+                    command.Prepare();
+                    isLoginunique = IsExist(command);
+                }
+            }
+            return isLoginunique;
+        }
+
+        private bool IsExist(NpgsqlCommand command)
+        {
+            bool exist = true;
+            NpgsqlDataReader userReader = command.ExecuteReader();
+            while (userReader.Read())
+            {
+                exist = userReader.GetBoolean(userReader.GetOrdinal("result"));
+            }
+            return !exist;
         }
 
         private void DeleteUserGroups(string login, OperationResult operationResult)
