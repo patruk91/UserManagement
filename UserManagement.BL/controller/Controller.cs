@@ -85,7 +85,7 @@ namespace UserManagement.BL.controller
                     case 3:
                         List<User> usersList = _userController.GetAllUsers();
                         _view.DisplayUsers(usersList);
-                        string userLogin =_userController.GetUserLogin("Enter user login");
+                        string userLogin =_userController.GetExistingUserLogin("Enter user login");
                         _userController.RemoveUser(userLogin);
                         break;
                     case 4:

@@ -31,7 +31,7 @@ namespace UserManagement.BL.controller
         {
             _read.ChangeConsoleInput(stringReader);
             _view.DisplayActionRequest("Please, provide data for new user");
-            string login = GetUserLogin("\nEnter user login");
+            string login = GetUniqueUserLogin("\nEnter user login");
             string password = _read.GetUserAnswer("Enter user password");
             string firstName = _read.GetUserAnswer("Enter user first name");
             string lastName = _read.GetUserAnswer("Enter user last name");
@@ -40,7 +40,7 @@ namespace UserManagement.BL.controller
             return new User(login, password, firstName, lastName, birthDate);
         }
 
-        public string GetUserLogin(string action)
+        public string GetUniqueUserLogin(string action)
         {
             string input;
             do
@@ -48,6 +48,17 @@ namespace UserManagement.BL.controller
                 _view.DisplayActionRequest(action);
                 input = _read.GetInput();
             } while (_userRepository.IsLoginUnique(input));
+            return input;
+        }
+
+        public string GetExistingUserLogin(string action)
+        {
+            string input;
+            do
+            {
+                _view.DisplayActionRequest(action);
+                input = _read.GetInput();
+            } while (!_userRepository.IsLoginUnique(input));
             return input;
         }
 
