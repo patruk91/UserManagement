@@ -10,5 +10,6 @@ namespace UserManagement.AL
         OperationResult Add(User user);
         OperationResult Delete(string login);
         OperationResult Edit(User user);
+        bool IsLoginUnique(string userLogin);
     }
 }

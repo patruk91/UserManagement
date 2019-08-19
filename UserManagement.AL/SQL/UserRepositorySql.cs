@@ -209,6 +209,11 @@ namespace UserManagement.AL.SQL
             return operationResult;
         }
 
+        public bool IsLoginUnique(string userLogin)
+        {
+            throw new NotImplementedException();
+        }
+
         private void DeleteUserGroups(string login, OperationResult operationResult)
         {
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())

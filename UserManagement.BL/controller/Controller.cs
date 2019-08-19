@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using UserManagement.AL;
 using UserManagement.AL.SQL;
 using UserManagement.M;
@@ -13,6 +14,8 @@ namespace UserManagement.BL.controller
         private UserGroupController _userGroupController;
         private View _view;
         private Read _read;
+        StringReader x = new StringReader(Console.ReadLine());
+
 
         public Controller(UserController userController, UserGroupController userGroupController, View view, Read read)
         {
@@ -74,7 +77,12 @@ namespace UserManagement.BL.controller
                         _view.DisplayUsers(users);
                         break;
                     case 2:
-                        
+                        User user = null;
+                        using (StringReader sr = new StringReader(""))
+                        {
+                            user = _userController.GetDataForNewUser(sr);
+                        }
+                        //_userController.AddUserToRepository();
                         break;
                     case 3:
 

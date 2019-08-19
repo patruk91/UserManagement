@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace UserManagement.VL
 {
@@ -10,10 +12,35 @@ namespace UserManagement.VL
         {
             _view = view;
         }
-
-        private string GetInput()
+        
+        public string GetInput()
         {
             return Console.ReadLine();
+        }
+
+        public string GetUserAnswer(string action)
+        {
+            _view.DisplayActionRequest(action);
+            return GetInput();
+        }
+
+        public DateTime GetBirthDate(string action)
+        {
+            DateTime date;
+            string input;
+            do
+            {
+                _view.DisplayActionRequest(action);
+                input = GetInput();
+
+            } while (DateTime.TryParse(input, out date));
+            return date;
+        }
+
+        public  void ChangeConsoleInput(StringReader stringReader)
+        {
+            const int notAvailableCharacters = -1;
+            if (stringReader.Peek() != notAvailableCharacters) Console.SetIn(stringReader);
         }
 
         public string GetNotEmptyString()
