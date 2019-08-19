@@ -24,7 +24,7 @@ namespace UserManagement.VL
             return GetInput();
         }
 
-        public DateTime GetBirthDate(string action)
+        public DateTime GetDate(string action)
         {
             DateTime date;
             string input;
@@ -33,7 +33,7 @@ namespace UserManagement.VL
                 _view.DisplayActionRequest(action);
                 input = GetInput();
 
-            } while (DateTime.TryParse(input, out date));
+            } while (!DateTime.TryParse(input, out date));
             return date;
         }
 

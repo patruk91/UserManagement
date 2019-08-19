@@ -30,22 +30,30 @@ namespace UserManagement.BL.controller
         public User GetDataForNewUser(StringReader stringReader)
         {
             _read.ChangeConsoleInput(stringReader);
-            _view.DisplayActionRequest("Please, provide data for new user.");
-            string login = GetUserLogin("Enter user login");
+            _view.DisplayActionRequest("Please, provide data for new user");
+            string login = GetUserLogin("\nEnter user login");
             string password = _read.GetUserAnswer("Enter user password");
             string firstName = _read.GetUserAnswer("Enter user first name");
             string lastName = _read.GetUserAnswer("Enter user last name");
-            DateTime birthDate = _read.GetBirthDate("Enter user birthday");
-
+            DateTime birthDate = _read.GetDate("Enter user birthday");
 
             return new User(login, password, firstName, lastName, birthDate);
-
-
         }
 
-        private string GetUserLogin(string enterUserLogin)
+        private string GetUserLogin(string action)
         {
-            throw new NotImplementedException();
+            string input;
+            do
+            {
+                _view.DisplayActionRequest(action);
+                input = _read.GetInput();
+            } while (_userRepository.IsLoginUnique(input));
+            return input;
+        }
+
+        public void AddUserToRepository(User user)
+        {
+            _userRepository.Add(user);
         }
     }
 }

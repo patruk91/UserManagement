@@ -211,19 +211,19 @@ namespace UserManagement.AL.SQL
 
         public bool IsLoginUnique(string userLogin)
         {
-            bool isLoginunique = true;
+            bool isLoginUnique = true;
             using (NpgsqlConnection connection = ConnectionSql.GetConnection())
             {
 
-                string query = "SELECT exist(SELECT 'exists' FROM users WHERE login = ?) AS result";
+                string query = "SELECT exists(SELECT 'exists' FROM users WHERE login = @login) AS result";
                 using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                 {
-                    command.Parameters.Add("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
+                    command.Parameters.AddWithValue("login", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userLogin;
                     command.Prepare();
-                    isLoginunique = IsExist(command);
+                    isLoginUnique = IsExist(command);
                 }
             }
-            return isLoginunique;
+            return isLoginUnique;
         }
 
         private bool IsExist(NpgsqlCommand command)
@@ -234,7 +234,7 @@ namespace UserManagement.AL.SQL
             {
                 exist = userReader.GetBoolean(userReader.GetOrdinal("result"));
             }
-            return !exist;
+            return exist;
         }
 
         private void DeleteUserGroups(string login, OperationResult operationResult)

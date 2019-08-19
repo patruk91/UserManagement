@@ -14,8 +14,6 @@ namespace UserManagement.BL.controller
         private UserGroupController _userGroupController;
         private View _view;
         private Read _read;
-        StringReader x = new StringReader(Console.ReadLine());
-
 
         public Controller(UserController userController, UserGroupController userGroupController, View view, Read read)
         {
@@ -82,7 +80,7 @@ namespace UserManagement.BL.controller
                         {
                             user = _userController.GetDataForNewUser(sr);
                         }
-                        //_userController.AddUserToRepository();
+                        _userController.AddUserToRepository(user);
                         break;
                     case 3:
 
