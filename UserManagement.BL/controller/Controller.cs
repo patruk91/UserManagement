@@ -83,7 +83,10 @@ namespace UserManagement.BL.controller
                         _userController.AddUserToRepository(user);
                         break;
                     case 3:
-
+                        List<User> usersList = _userController.GetAllUsers();
+                        _view.DisplayUsers(usersList);
+                        string userLogin =_userController.GetUserLogin("Enter user login");
+                        _userController.RemoveUser(userLogin);
                         break;
                     case 4:
 

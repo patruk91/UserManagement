@@ -24,6 +24,7 @@ namespace UserManagement.VL
 
         public void DisplayUsers(List<User> users)
         {
+            int i = 1;
             foreach (User user in users)
             {
                 Console.WriteLine(user);

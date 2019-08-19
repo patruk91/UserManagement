@@ -40,7 +40,7 @@ namespace UserManagement.BL.controller
             return new User(login, password, firstName, lastName, birthDate);
         }
 
-        private string GetUserLogin(string action)
+        public string GetUserLogin(string action)
         {
             string input;
             do
@@ -54,6 +54,11 @@ namespace UserManagement.BL.controller
         public void AddUserToRepository(User user)
         {
             _userRepository.Add(user);
+        }
+
+        public void RemoveUser(string userLogin)
+        {
+            _userRepository.Delete(userLogin);
         }
     }
 }
