@@ -27,7 +27,7 @@ namespace UserManagement.VL
             int i = 1;
             foreach (User user in users)
             {
-                Console.WriteLine(user);
+                Console.WriteLine($"{i++} {user}");
             }
         }
     }
